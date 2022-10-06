@@ -38,7 +38,7 @@ function App() {
             return (
                 <select onChange={handleChange}>
                     <option value="⬇️ Select a retailer ⬇️"> -- Select a retailer--</option>
-                    {data.retailers.map(({id, name}) => <option key={id} value={selected}>{name}</option>)}
+                    {data.retailers.map(({id, name}) => <option key={id} selected={name === selected} value={name}>{name}</option>)}
                 </select>
 
             );
