@@ -1,23 +1,31 @@
 import {useQuery, gql} from '@apollo/client';
 import {useEffect, useState} from "react";
+import {Search} from "./components/search";
 
 function App() {
 
     const [selected, setSelected] = useState("");
+    const [zipCode, setZipCode] = useState("");
+    const [formObject, setFormObject] = useState({
+
+    });
 
     useEffect(() => {
         const lastSelected = localStorage.getItem("retailer");
         if (lastSelected) setSelected(lastSelected);
     }, []);
 
+    useEffect(() => {
+       console.log(zipCode);
+    }, [zipCode]);
 
     const handleChange = event => {
         localStorage.setItem('retailer', event.target.value);
     }
 
     const GET_RETAILERS = gql`
-        query retailers {
-            retailers(zipCode: "11234", blacklistedRetailers: [], whitelistedRetailers: []) {
+        query retailers($zipcode: String!) {
+            retailers(zipCode: $zipcode, blacklistedRetailers: [], whitelistedRetailers: []) {
                 id
                 slug
                 shopOnLogoUrl
@@ -29,7 +37,9 @@ function App() {
     `;
 
     const DisplayRetailers = () => {
-        const {loading, error, data} = useQuery(GET_RETAILERS);
+        const { loading, error, data } = useQuery(GET_RETAILERS, {
+            variables: { zipcode: zipCode.toString() },
+        });
 
         if (loading) return <p>Loading...</p>;
         if (error) return <p>Error :(</p>;
@@ -48,6 +58,7 @@ function App() {
     return (
         <>
             <DisplayRetailers/>
+            <Search setZipCode={setZipCode}/>
         </>
     );
 }
